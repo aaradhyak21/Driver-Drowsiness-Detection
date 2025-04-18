@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 
 df = pd.read_csv('Dataset.csv')
 
+# Model Training
 oversample = SMOTE(random_state = 42)
 x_resampled, y_resampled = oversample.fit_resample(df[['EAR', 'MAR']], df['Label'])
 
@@ -20,6 +21,7 @@ model.fit(x_train, y_train)
 
 y_pred = model.predict(x_test)
 
+# Model Evaluation
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy * 100:.2f}%")
 
