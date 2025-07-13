@@ -31,8 +31,19 @@ def detect():
         eyes = eye_cascade.detectMultiScale(roi_gray)
         mouth = mouth_cascade.detectMultiScale(roi_gray, 1.7, 11)
 
-        ear = 0.3 if len(eyes) >= 2 else 1.0
-        mar = 0.7 if len(mouth) >= 1 else 0.0
+        ear = 1.0
+        mar = 0.0
+
+        if len(eyes) >= 2:
+            # Take the two most confident eye detections
+            eyes = sorted(eyes, key=lambda e: e[2]*e[3], reverse=True)[:2]
+            eye_h = np.mean([eh for (_, _, _, eh) in eyes])
+            eye_w = np.mean([ew for (_, ew, _, _) in eyes])
+            ear = eye_h / eye_w if eye_w else 1.0
+
+        if len(mouth) >= 1:
+            mx, my, mw, mh = mouth[0]
+            mar = mh / mw if mw else 0.0
 
         status = "Alert"
         if mar > 0.6:
@@ -43,6 +54,8 @@ def detect():
         return jsonify({"status": status, "ear": round(ear, 2), "mar": round(mar, 2)})
 
     return jsonify({"status": "No face detected", "ear": 0, "mar": 0})
+
+# Render-compatible run
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
