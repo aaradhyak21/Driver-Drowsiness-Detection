@@ -1,5 +1,4 @@
 flask
 opencv-python
 numpy
-dlib
 Pillow
