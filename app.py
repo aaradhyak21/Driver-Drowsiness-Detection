@@ -43,3 +43,7 @@ def detect():
         return jsonify({"status": status, "ear": round(ear, 2), "mar": round(mar, 2)})
 
     return jsonify({"status": "No face detected", "ear": 0, "mar": 0})
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
